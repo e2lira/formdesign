@@ -1,0 +1,650 @@
+	<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Diseñador de Formularios</title>
+  <link rel="stylesheet" href="css/smoothness.css"> 
+  <link rel="stylesheet" href="css/jquery-ui.theme.css"> 
+  <script src="js/jquery.js"></script>
+  <script src="js/jquery-ui.js"></script>
+  <link rel="stylesheet" href="css/resource.css"> 
+  <link href="css/toggle-si-no.css" rel="stylesheet">  
+  <style>
+   .draggable { width: 250px; 
+     height: 40px; 
+     font-family: verdana;
+     line-height: 50%;
+     line-height: 10px;
+     font-size: 14px;
+	  border: 1px solid black;
+	  margin-bottom: 15px;
+	  margin-left: 3px;
+	  text-align: left;
+	  background-color: lightblue;
+	  cursor: pointer;
+	}
+  #text {background-image: url("images/input_text.png"); background-repeat: no-repeat; background-position: right top; }
+  #numeric {background-image: url("images/Input_Text_Numeric.png"); background-repeat: no-repeat; background-position: right top; }
+  #gps {background-image: url("images/maps.png"); background-repeat: no-repeat; background-position: right top; }
+  #picture {background-image: url("images/image.png"); background-repeat: no-repeat; background-position: right top; }
+  #seleccion {background-image: url("images/Select.png"); background-repeat: no-repeat; background-position: right top; }
+  #toggle {background-image: url("images/toggle2.png"); background-repeat: no-repeat; background-position: right top; }
+  #switch {background-image: url("images/basic-icon-toggle-off.png"); background-repeat: no-repeat; background-position: right top; }
+  #time {background-image: url("images/opening-times-icon.png"); background-repeat: no-repeat; background-position: right top; }
+  #date {background-image: url("images/calendar.png"); background-repeat: no-repeat; background-position: right top; }
+  #timeStamp {background-image: url("images/timeStamp.png"); background-repeat: no-repeat; background-position: right top; }
+  #seekbar {background-image: url("images/slider1.png"); background-repeat: no-repeat; background-position: right top; }
+  #tab {background-image: url("images/tab2.png"); background-repeat: no-repeat; background-position: right top; }  
+  #droppable { width: 300px; height: 450px; padding: 0.5em; float: left; margin: 50px; overflow:scroll; }
+  #valor { visibility: visible; width:40px; }
+  #componentes { height: 400px; width:100px; 
+      border-radius: 25px;
+    border: 2px solid #8AC007;
+    padding: 20px; }
+	.remove {
+	  background: transparent url("images/Actions-edit-delete-icon.png") scroll no-repeat left  ;
+	  padding: 2px 0px 2px 30px;
+	}   
+
+	.elementos {
+	  background: transparent url("images/System-settings-icon.png") scroll no-repeat left ;	  
+	  padding: 2px 0px 2px 30px;
+	} 
+	
+/*	
+		Se adiciona Style usado en Kleenex08
+*/ 
+    body { font-size: 62.5%; }
+    label, input { display:block; }
+    input.text { margin-bottom:12px; width:95%; padding: .4em; }
+    fieldset { padding:0; border:0; margin-top:25px; }
+    h1 { font-size: 1.2em; margin: .6em 0; }
+    div#users-contain { width: 350px; margin: 20px 0; }
+    div#users-contain table { margin: 1em 0; border-collapse: collapse; width: 100%; }
+    div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
+    .ui-dialog .ui-state-error { padding: .3em; }
+    .validateTips { border: 1px solid transparent; padding: 0.3em; }
+  </style>
+  <script>
+  
+  var elements = [];
+  var objElemts = null;
+  var countElement = 0;
+  var currentObj
+  var position;
+  var html
+  $(function() {
+    $( ".draggable" ).draggable({
+      cursor: "pointer",
+      helper: "clone",
+		drag: function (event, ui) {
+			console.log("Seleccionanado elemento draggable");
+		},
+		start: function (event, ui) {
+			console.log("Iniciando draggable");
+		},
+		stop: function (event, ui) {
+			console.log("Stop draggable");
+		
+		} 		 
+    });
+            
+    $( "#droppable" ).droppable({
+      drop: function( event, ui ) {
+        $( this )
+          .addClass( "ui-state-highlight" )
+          .find( "p" )
+            .html(  " Dropped!" );
+         
+         var element = ui.draggable;
+        	console.log("----- " + element.attr('id') );
+        	if (element.attr('id') == "text"){
+        			objElement = new Object();
+					objElement.id = "text"
+					objElement.position = countElement;
+						
+					elements.push(objElement);
+					//$(this).append($(ui.helper).clone()); 
+					var objTemp =  $("#" + element.attr('id')).clone();
+					objTemp.find("input").attr("id",countElement);
+					objTemp.find("input").val(countElement);
+					
+        			$(this) 
+        				.append(objTemp); 
+					console.log("Añadiendo objeto " + objElement.id + ", position: " + objElement.position);
+					countElement++;
+        	}
+        	if (element.attr('id') == "numeric"){
+        			objElement = new Object();
+					objElement.id = "numeric"
+					
+					objElement.position = countElement;
+						
+					elements.push(objElement);
+					var objTemp =  $("#" + element.attr('id')).clone();
+					objTemp.find("input").attr("id",countElement);
+					objTemp.find("input").val(countElement);
+        			$(this) 
+        				.append(objTemp); 
+					console.log("Añadiendo objeto " + objElement.id + ", position: " + objElement.position);
+					countElement++;
+        	}   
+        	if (element.attr('id') == "gps"){
+        			objElement = new Object();
+					objElement.id = "gps"
+					objElement.position = countElement;
+	
+					elements.push(objElement);
+					var objTemp =  $("#" + element.attr('id')).clone();
+					objTemp.find("input").attr("id",countElement);
+					objTemp.find("input").val(countElement);
+        			$(this) 
+        				.append(objTemp); 
+					console.log("Añadiendo objeto " + objElement.id + ", position: " + objElement.position);
+					countElement++;
+        	} 
+        	if (element.attr('id') == "picture"){
+        			objElement = new Object();
+					objElement.id = "picture"
+					objElement.position = countElement;
+	
+					elements.push(objElement);
+					var objTemp =  $("#" + element.attr('id')).clone();
+					objTemp.find("input").attr("id",countElement);
+					objTemp.find("input").val(countElement);
+        			$(this) 
+        				.append(objTemp); 
+					console.log("Añadiendo objeto " + objElement.id + ", position: " + objElement.position);
+					countElement++;
+        	} 
+        	if (element.attr('id') == "seleccion"){
+        			objElement = new Object();
+					objElement.id = "seleccion"
+					objElement.position = countElement;
+	
+					elements.push(objElement);
+					var objTemp =  $("#" + element.attr('id')).clone();
+					objTemp.find("input").attr("id",countElement);
+					objTemp.find("input").val(countElement);
+        			$(this) 
+        				.append(objTemp); 
+					console.log("Añadiendo objeto " + objElement.id + ", position: " + objElement.position);
+					countElement++;
+        	} 
+        	if (element.attr('id') == "toggle"){
+        			objElement = new Object();
+					objElement.id = "toggle"
+					objElement.position = countElement;
+	
+					elements.push(objElement);
+					var objTemp =  $("#" + element.attr('id')).clone();
+					objTemp.find("input").attr("id",countElement);
+					objTemp.find("input").val(countElement);
+        			$(this) 
+        				.append(objTemp); 
+					console.log("Añadiendo objeto " + objElement.id + ", position: " + objElement.position);
+					countElement++;
+        	} 
+        	if (element.attr('id') == "switch"){
+        			objElement = new Object();
+					objElement.id = "switch"
+					objElement.position = countElement;
+	
+					elements.push(objElement);
+					var objTemp =  $("#" + element.attr('id')).clone();
+					objTemp.find("input").attr("id",countElement);
+					objTemp.find("input").val(countElement);
+        			$(this) 
+        				.append(objTemp); 
+					console.log("Añadiendo objeto " + objElement.id + ", position: " + objElement.position);
+					countElement++;
+        	} 
+        	if (element.attr('id') == "time"){
+        			objElement = new Object();
+					objElement.id = "time"
+					objElement.position = countElement;
+	
+					elements.push(objElement);
+					var objTemp =  $("#" + element.attr('id')).clone();
+					objTemp.find("input").attr("id",countElement);
+					objTemp.find("input").val(countElement);
+        			$(this) 
+        				.append(objTemp); 
+					console.log("Añadiendo objeto " + objElement.id + ", position: " + objElement.position);
+					countElement++;
+        	} 
+        	if (element.attr('id') == "date"){
+        			objElement = new Object();
+					objElement.id = "date"
+					objElement.position = countElement;
+	
+					elements.push(objElement);
+					var objTemp =  $("#" + element.attr('id')).clone();
+					objTemp.find("input").attr("id",countElement);
+					objTemp.find("input").val(countElement);
+        			$(this) 
+        				.append(objTemp); 
+					console.log("Añadiendo objeto " + objElement.id + ", position: " + objElement.position);
+					countElement++;
+        	} 
+        	if (element.attr('id') == "seekbar"){
+        			objElement = new Object();
+					objElement.id = "seekbar"
+					objElement.position = countElement;
+	
+					elements.push(objElement);
+					var objTemp =  $("#" + element.attr('id')).clone();
+					objTemp.find("input").attr("id",countElement);
+					objTemp.find("input").val(countElement);
+        			$(this) 
+        				.append(objTemp); 
+					console.log("Añadiendo objeto " + objElement.id + ", position: " + objElement.position);
+					countElement++;
+        	} 
+        	if (element.attr('id') == "tab"){
+        			objElement = new Object();
+					objElement.id = "tab"
+					objElement.position = countElement;
+	
+					elements.push(objElement);
+					var objTemp =  $("#" + element.attr('id')).clone();
+					objTemp.find("input").attr("id",countElement);
+					objTemp.find("input").val(countElement);
+        			$(this) 
+        				.append(objTemp); 
+					console.log("Añadiendo objeto " + objElement.id + ", position: " + objElement.position);
+					countElement++;
+        	}         	        	        	        	        	        	        	        	     	
+      },
+      over: function () {
+      	$( this )
+          .addClass( "ui-state-highlight" )
+          .find( "p" )
+            .html( " Moving In!" );
+      },
+      out: function () {
+      	$( this )
+          .addClass( "ui-state-highlight" )
+          .find( "p" )
+            .html( " Moving Out!" );      	
+      }
+    });
+    
+    $(".drop-container").on("click", ".draggable", function () {
+    $(this).closest('.').fadeOut(200, function () {
+        var $el = $(this).clone().show().prependTo('.drag-item');
+        draggable($el)
+    });
+});
+
+	$('#droppable').find('draggable a').click(function () {
+		alert('Elemento: ' + this.html);
+	});
+	
+	$('#btnList').click(function () {
+			for (var i=0 ; i < elements.length; i++){
+				console.log("Elemento de tipo: " + elements[i].id + ", posicion: " + elements[i].position );
+			}
+  });
+  
+  /**
+  *  Para borrar un elemento dentro de Dropable
+  */
+	$('#droppable').on("click",".draggable .remove", function ( event ) {
+			currentObj = $(event.target);
+			position = currentObj.parent().find('input').val();
+			$( "#dialog-confirm" ).dialog("open");
+		  /* elements.splice(position, 1);
+		   console.log("Posicion a borrar: " + position);
+		   if (position < elements.length){
+		   	elements[position].position = position;
+		   	currentObj.parent().next("div").find('input').val(position);
+		   }
+			currentObj.parent().remove();
+			countElement--; */
+	});
+	
+	$('#droppable').on("click",".draggable .elementos", function ( event ) {
+			currentObj = $(event.target);
+			position = currentObj.parent().find('input').val();
+			$( "#dialog-form" ).dialog("open");
+	});
+  
+    $("#dialog-confirm").html("Esta usted seguro de borrar el componente?");  
+    $( "#dialog-confirm" ).dialog({
+    	autoOpen: false,
+      resizable: false,
+        width: 350,
+        height: 175,
+      modal: true,
+      hide: { effect: "explode", duration: 1000 },
+      buttons: {
+        "Borrar componente": function() {
+          
+          
+		   console.log("Posicion a borrar: " + position);
+		  // currentObj.parent().remove();
+		   if (position < elements.length){
+		     for (var i=position; i < elements.length; i++){
+		   		elements[i].position = i;
+		   	   var idElement = parseInt(i)  + 1;
+		   		$('#' + idElement).val(i);
+		   		$('#' + idElement).attr('id', i); 
+		   	}
+		   }
+		   elements.splice(position, 1);
+			currentObj.parent().remove();
+			countElement--;
+			$( this ).dialog( "close" );
+        },
+        Cancel: function() {
+          $( this ).dialog( "close" );
+        }
+      }
+    });  
+    
+});
+  
+  function draggable(el){
+  
+  }
+  
+  function remove(element){
+		alert(element);  
+  }
+
+/**
+	A continuacion se inserta la adicción de Datos 
+*/  
+  
+  $(function() {
+    var dialog, form,
+ 
+      // From http://www.whatwg.org/specs/web-apps/current-work/multipage/states-of-the-type-attribute.html#e-mail-state-%28type=email%29
+      emailRegex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
+      index = $( "#index" ),
+      name = $( "#name" ),
+      label = $( "#label" ),
+      options = $( "#options" ),
+      required = $( "#required" ),
+      ancho = $( "#width" ),
+      alto = $( "#height" ),
+      cascade = $( "#cascade" ),
+      enable = $( "#enable" ),
+      visible = $( "#visible" ),
+      allFields = $( [] ).add( index ).add( name ).add( label ).add( options ).add( required ).add( width ).add( height ).add( cascade ).add( enable ).add( visible ),
+      tips = $( ".validateTips" );
+ 
+    function updateTips( t ) {
+      tips
+        .text( t )
+        .addClass( "ui-state-highlight" );
+      setTimeout(function() {
+        tips.removeClass( "ui-state-highlight", 1500 );
+      }, 500 );
+    }
+ 
+    function checkLength( o, n, min, max ) {
+      if ( o.val().length > max || o.val().length < min ) {
+        o.addClass( "ui-state-error" );
+        updateTips( "Length of " + n + " must be between " +
+          min + " and " + max + "." );
+        return false;
+      } else {
+        return true;
+      }
+    }
+ 
+    function checkRegexp( o, regexp, n ) {
+      if ( !( regexp.test( o.val() ) ) ) {
+        o.addClass( "ui-state-error" );
+        updateTips( n );
+        return false;
+      } else {
+        return true;
+      }
+    }
+    
+    function checkRegexpSwitch( o, regexp, n ) {
+      if ( !( regexp.test( o.prop("checked") ) ) ) {
+        o.addClass( "ui-state-error" );
+        updateTips( n );
+        return false;
+      } else {
+        return true;
+      }
+    }
+     
+    function addUser() {
+      var valid = true;
+      
+      allFields.removeClass( "ui-state-error" );
+ 		
+      valid = valid && checkLength( index, "index", 1, 3 );
+      valid = valid && checkLength( name, "name", 3, 16 );
+      valid = valid && checkLength( label, "label", 3, 16 );
+      valid = valid && checkLength( options, "options", 0, 80 );      
+      valid = valid && checkLength( required, "required", 2, 3 );
+      valid = valid && checkLength( ancho, "width", 1, 3 );
+      valid = valid && checkLength( alto, "heigth", 1, 3 );
+      valid = valid && checkLength( cascade, "cascade", 0, 80 );
+      valid = valid && checkLength( enable, "enable", 2, 3 );
+      valid = valid && checkLength( visible, "visible", 2, 3 );
+ 
+      valid = valid && checkRegexp( index, /^([0-9])+$/i, "Index may consist of 0-9, more than one " );
+      console.log("Despues checkRegexp index");
+      valid = valid && checkRegexp( name, /^[a-z]([0-9a-z_\s])+$/i, "Name -- may consist of a-z, 0-9, underscores, spaces and must begin with a letter." );
+      valid = valid && checkRegexp( label, /^[a-z]([0-9a-z_\s])+$/i, "Label -- may consist of a-z, 0-9, underscores, spaces and must begin with a letter." );
+      valid = valid && checkRegexp( options, /^([a-z][0-9a-z_]*\|)*$/i, "Options -- may consist of a-z, 0-9, underscores, spaces, | and must begin with a letter." );
+      valid = valid && checkRegexpSwitch( required, /^[true|false]{1}/i, "Required -- may consist on or off " );
+      valid = valid && checkRegexp( ancho, /^([1-9][0-9]*)*$/, "Width -- may consist of 1-9, en first position and 0-9 in next position " );
+      valid = valid && checkRegexp( alto, /^([1-9][0-9]*)*$/, "Height -- may consist of 1-9, en first position and 0-9 in next position " );
+      valid = valid && checkRegexp( cascade, /^([0-9][0-9]*\|)*$/, "Cascade -- may consist of 0-9, | " );
+      valid = valid && checkRegexpSwitch( enable, /^[true|false]{1}/i, "Enable -- may consist on or off " );
+      valid = valid && checkRegexpSwitch( visible, /^[true|false]{1}/i, "Visible -- may consist on or off " );
+ 
+      if ( valid ) {
+        console.log("Posicion a borrar: " + position);
+		  // currentObj.parent().remove();		     
+		   		elements[i].position = i;
+		   	   var idElement = parseInt(i)  + 1;
+		   		$('#' + idElement).val(i);
+		   		$('#' + idElement).attr('id', i); 
+
+        			objElement = new Object();
+					objElement.id = "numeric"
+					
+					objElement.position = countElement;
+						
+					elements.push(objElement);
+					var objTemp =  $("#" + element.attr('id')).clone();
+					objTemp.find("input").attr("id",countElement);
+					objTemp.find("input").val(countElement);
+        			$(this) 
+        				.append(objTemp); 
+					console.log("Añadiendo objeto " + objElement.id + ", position: " + objElement.position);
+					countElement++;
+	   	
+		   
+     
+        dialog.dialog( "close" );
+      }
+      return valid;
+    }
+ 
+    dialog = $( "#dialog-form" ).dialog({
+      autoOpen: false,
+      height: 300,
+      width: 350,
+      modal: true,
+      buttons: {
+        "Create Data": addUser,
+        Cancel: function() {
+          dialog.dialog( "close" );
+        }
+      },
+      close: function() {
+        form[ 0 ].reset();
+        allFields.removeClass( "ui-state-error" );
+      }
+    });
+ 
+    form = dialog.find( "form" ).on( "submit", function( event ) {
+      event.preventDefault();
+      addUser();
+    });
+ 
+    
+
+  });  
+  </script>
+  
+</head>
+<body>
+
+  <h3>Diseñador de Formularios</h3>
+  <div style="margin-top:100px 0;"></div>
+
+  <div style="float:left;width:200px;margin-right:20px;">
+    <div class="title">Componentes</div>
+    
+	<div id="text" class="draggable ui-widget-content">
+	  Text <br/>
+	  <a class="elementos" href="#">datos</a>
+	  <a class="remove" href="#">remove</a> 
+	  <input type="text" value="" id="valor" type="hidden"/>
+	</div>
+	
+	 <div id="numeric" class="draggable ui-widget-content">
+	  Numeric <br/>
+	  <a class="elementos" href="#">datos</a>
+	  <a class="remove" href="#">remove</a> 
+	  <input type="text" value="" id="valor" />
+	</div>
+	 <div id="gps" class="draggable ui-widget-content">
+	  GPS <br/>
+	  <a class="elementos" href="#">datos</a>
+	  <a class="remove" href="#">remove</a>   
+	  <input type="text" value="" id="valor" />
+	</div>
+	 <div id="picture" class="draggable ui-widget-content">
+	  Picture <br/>
+	  <a class="elementos" href="#">datos</a>
+	  <a class="remove" href="#">remove</a> 
+	  <input type="text" value="" id="valor" />
+	 </div>
+	 <div id="seleccion" class="draggable ui-widget-content">
+	  Select <br/>
+	  <a class="elementos" href="#">datos</a>
+	  <a class="remove" href="#">remove</a>   
+	  <input type="text" value="" id="valor" />
+	 </div>
+	 <div id="toggle" class="draggable ui-widget-content">
+	  Toggle <br/>
+	  <a class="elementos" href="#">datos</a>
+	  <a class="remove" href="#">remove</a>   
+	  <input type="text" value="" id="valor" />
+	 </div>
+	 <div id="switch" class="draggable ui-widget-content">
+	  Switch <br/>
+	  <a class="elementos" href="#">datos</a  $(function() {
+	  <a class="remove" href="#">remove</a>   
+	  <input type="text" value="" id="valor" />
+	 </div>
+	 <div id="time" class="draggable ui-widget-content">
+	  Time <br/>
+	  <a class="elementos" href="#">datos</a>
+	  <a class="remove" href="#">remove</a>   
+	  <input type="text" value="" id="valor" />
+	 </div>
+	 <div id="date" class="draggable ui-widget-content">
+	  Date <br/>
+	  <a class="elementos" href="#">datos</a>
+	  <a class="remove" href="#">remove</a> 	  
+	  <input type="text" value="" id="valor" />
+	 </div>
+	 <div id="seekbar" class="draggable ui-widget-content">
+	  Slide <br/>
+	  <a class="elementos" href="#">datos</a>
+	  <a class="remove" href="#">remove</a>   
+	  <input type="text" value="" id="valor" />
+	 </div>
+	 <div id="tab" class="draggable ui-widget-content">
+	  Tab <br/>
+	  <a class="elementos" href="#">datos</a>
+	  <a class="remove" href="#">remove</a> 	  
+	  <input type="text" value="" id="valor" />
+	 </div> 	 	 	 	 	 	 	 	 
+	 <div id="timeStamp" class="draggable ui-widget-content">
+	  TimeStamp  <br/>
+	  <a class="elementos" href="#">datos</a>
+	  <a class="remove" href="#">remove</a>   
+	  <input type="text" value="" id="valor" />
+	 </div> 			
+</div>
+
+  <div style="float:left;width:450px;">
+    <div class="title">Lienzo</div>
+    <div id="droppable" class="ui-widget-header" style="float:left;width:300px;"> 
+         <p>Drop here</p>
+    </div>
+  </div>
+  
+
+ <br/>
+ <input  type="button" id="btnList" value="Show List"/>
+
+<div id="dialog-confirm" title="Confirmar Borrado"></div>  
+
+<div id="dialog-form" title="Add Data">
+  <p class="validateTips">All form fields are required.</p>
+  <form>
+    <fieldset>
+      <label for="index">Index</label>
+      <input type="index" name="name" id="index" class="text ui-widget-content ui-corner-all">
+      
+      <label for="name">Name</label>
+      <input type="text" name="name" id="name" class="text ui-widget-content ui-corner-all">
+            
+      <label for="label">Label</label>
+      <input type="text" name="label" id="label" class="text ui-widget-content ui-corner-all">
+      
+      <label for="options">Options</label>
+      <input type="text" name="options" id="options" class="text ui-widget-content ui-corner-all">
+      
+      <label for="required">Field is required?</label>
+	    <div class="switch">
+         <input id="required" class="cmn-toggle cmn-toggle-yes-no" type="checkbox">
+         <label for="required" data-on="Yes" data-off="No"></label>
+       </div>
+       
+      <label for="width">Width</label>
+      <input type="text" name="width" id="width" class="text ui-widget-content ui-corner-all">   
+      
+      <label for="height">Height</label>
+      <input type="text" name="height" id="height" class="text ui-widget-content ui-corner-all">        
+      
+      <label for="cascade">Cascade</label>
+      <input type="text" name="cascade" id="cascade" class="text ui-widget-content ui-corner-all">  
+      
+      <label for="enable">Enable</label>
+	    <div class="switch">
+         <input id="enable" class="cmn-toggle cmn-toggle-yes-no" type="checkbox">
+         <label for="enable" data-on="Yes" data-off="No"></label>
+       </div> 
+      
+      <label for="visible">visible</label>
+	    <div class="switch">
+         <input id="visible" class="cmn-toggle cmn-toggle-yes-no" type="checkbox">
+         <label for="visible" data-on="Yes" data-off="No"></label>
+       </div>                  
+        
+ 
+      <!-- Allow form submission with keyboard without duplicating the dialog button -->
+      <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+    </fieldset>
+  </form>
+</div>
+     
+</body>
+</html>
